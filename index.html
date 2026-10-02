@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Why Cursed Text Looks Different on Every Screen</title>
+<meta name="description" content="Cursed and Zalgo text are built from real Unicode marks. See why fonts, apps and screen readers handle them differently, and how to test before posting.">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<link rel="canonical" href="{{FINAL_PUBLISHED_URL}}">
+
+<!-- Open Graph -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="Why Cursed Text Looks Different on Every Screen">
+<meta property="og:description" content="Cursed and Zalgo text are built from real Unicode marks. See why fonts, apps and screen readers handle them differently, and how to test before posting.">
+<meta property="og:url" content="{{FINAL_PUBLISHED_URL}}">
+<meta property="og:image" content="{{FEATURED_IMAGE_URL}}">
+<meta property="og:image:alt" content="The word HELLO shown plain, with a few combining marks, and with many stacked marks">
+<meta property="og:site_name" content="{{PUBLISHER_NAME}}">
+<meta property="article:published_time" content="{{DATE_PUBLISHED}}">
+<meta property="article:modified_time" content="{{DATE_MODIFIED}}">
+
+<!-- Twitter / X Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Why Cursed Text Looks Different on Every Screen">
+<meta name="twitter:description" content="Cursed and Zalgo text are built from real Unicode marks. See why fonts, apps and screen readers handle them differently, and how to test before posting.">
+<meta name="twitter:image" content="{{FEATURED_IMAGE_URL}}">
+
+<!-- Article schema -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Why Cursed Text Looks Different on Every Screen, and What Unicode Has to Do With It",
+  "description": "Cursed and Zalgo text are built from real Unicode marks. See why fonts, apps and screen readers handle them differently, and how to test before posting.",
+  "image": ["{{FEATURED_IMAGE_URL}}"],
+  "author": {
+    "@type": "Person",
+    "name": "{{AUTHOR_NAME}}",
+    "url": "{{AUTHOR_URL}}"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "{{PUBLISHER_NAME}}",
+    "url": "{{PUBLISHER_URL}}",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "{{PUBLISHER_LOGO}}"
+    }
+  },
+  "datePublished": "{{DATE_PUBLISHED}}",
+  "dateModified": "{{DATE_MODIFIED}}",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "{{FINAL_PUBLISHED_URL}}"
+  },
+  "inLanguage": "en"
+}
+</script>
+
+<style>
+  :root {
+    --bg: #faf9f6;
+    --surface: #ffffff;
+    --text: #1d2125;
+    --muted: #586069;
+    --accent: #5b3fa8;
+    --accent-soft: #efeaf9;
+    --border: #e1ded8;
+    --night: #1f2a44;
+    --night-soft: #dfe4ef;
+    --svg-ink: #1d2125;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #141619;
+      --surface: #1b1e22;
+      --text: #e7e9ec;
+      --muted: #a4abb3;
+      --accent: #b9a2f0;
+      --accent-soft: #241f33;
+      --border: #30343a;
+      --night: #9fb2db;
+      --night-soft: #232b3b;
+      --svg-ink: #e7e9ec;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #141619;
+    --surface: #1b1e22;
+    --text: #e7e9ec;
+    --muted: #a4abb3;
+    --accent: #b9a2f0;
+    --accent-soft: #241f33;
+    --border: #30343a;
+    --night: #9fb2db;
+    --night-soft: #232b3b;
+    --svg-ink: #e7e9ec;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Charter, "Bitstream Charter", Georgia, "Times New Roman", serif;
+    font-size: 1.0625rem;
+    line-height: 1.7;
+  }
+  .sans { font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
+  .site-header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 16px;
+  }
+  .site-header a { color: var(--text); text-decoration: none; font-weight: 600; }
+  main { padding: 0 16px; }
+  article { max-width: 700px; margin: 0 auto; padding: 32px 0 56px; }
+  .kicker {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--accent);
+    margin: 0 0 8px;
+  }
+  h1 { font-size: clamp(1.75rem, 4.6vw, 2.45rem); line-height: 1.2; margin: 0 0 14px; }
+  .standfirst { font-size: 1.18rem; color: var(--muted); margin: 0 0 18px; }
+  .byline {
+    font-size: 0.87rem;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 0;
+    margin: 0 0 28px;
+  }
+  h2 { font-size: 1.45rem; line-height: 1.3; margin: 2.2em 0 0.6em; }
+  h3 { font-size: 1.12rem; line-height: 1.35; margin: 1.6em 0 0.4em; }
+  p { margin: 0 0 1.1em; }
+  a { color: var(--accent); text-underline-offset: 2px; }
+  ul, ol { padding-left: 1.3em; margin: 0 0 1.1em; }
+  li { margin-bottom: 0.45em; }
+  .answer {
+    background: var(--accent-soft);
+    border-radius: 6px;
+    padding: 16px 18px;
+    margin: 0 0 24px;
+  }
+  .answer p:last-child { margin-bottom: 0; }
+  figure { margin: 28px 0; }
+  figure svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+  }
+  figure img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 6px;
+  }
+  figure.portrait img { max-width: 440px; margin: 0 auto; }
+  figure.portrait figcaption { text-align: center; }
+  figcaption { font-size: 0.85rem; color: var(--muted); margin-top: 8px; }
+  .table-wrap {
+    overflow-x: auto;
+    margin: 20px 0 26px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+  }
+  table {
+    width: 100%;
+    min-width: 540px;
+    border-collapse: collapse;
+    background: var(--surface);
+    font-size: 0.92rem;
+    line-height: 1.5;
+  }
+  caption { text-align: left; padding: 10px 12px; font-weight: 600; color: var(--muted); }
+  th, td { text-align: left; vertical-align: top; padding: 10px 12px; border-top: 1px solid var(--border); }
+  thead th { background: var(--night-soft); }
+  .note {
+    border-left: 3px solid var(--night);
+    background: var(--night-soft);
+    padding: 14px 16px;
+    margin: 22px 0;
+    border-radius: 0 6px 6px 0;
+  }
+  .note p:last-child { margin-bottom: 0; }
+  .sources {
+    font-size: 0.85rem;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+    margin-top: 40px;
+    padding-top: 16px;
+  }
+  .sources h2 { font-size: 1rem; margin: 0 0 8px; }
+  .sources li { margin-bottom: 0.3em; }
+  .site-footer {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 20px 16px;
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  code { font-family: "DejaVu Sans Mono", ui-monospace, Menlo, Consolas, monospace; font-size: 0.9em; background: var(--accent-soft); padding: 1px 5px; border-radius: 4px; }
+  .tool-box { display: flex; gap: 18px; align-items: center; border: 1px solid var(--border); background: var(--surface); border-radius: 8px; padding: 16px 18px; margin: 24px 0; }
+  .tool-box img { width: 120px; height: auto; flex-shrink: 0; border-radius: 6px; }
+  .tool-box p { margin: 0; font-size: 0.95rem; }
+  @media (max-width: 520px) { .tool-box { flex-direction: column; align-items: flex-start; } }
+</style>
+</head>
+<body>
+
+<header class="site-header sans">
+  <a href="{{PUBLISHER_URL}}">{{PUBLISHER_NAME}}</a>
+</header>
+
+<main>
+<article>
+
+  <header>
+    <p class="kicker sans">Digital typography</p>
+    <h1>Why Cursed Text Looks Different on Every Screen, and What Unicode Has to Do With It</h1>
+    <p class="standfirst">The same string of glitchy, dripping letters can look terrifying on your laptop, tidy on your phone and broken in someone else's app. The reason lies in how Unicode, fonts and software share the job of drawing text.</p>
+    <p class="byline sans">By {{AUTHOR_NAME}} &middot; <time datetime="{{DATE_PUBLISHED}}">{{DATE_PUBLISHED}}</time></p>
+  </header>
+
+  <figure>
+    <img src="images/cursed-text-unicode-featured.webp" width="1200" height="630" alt="The word HELLO shown plain, then with a few combining marks, then with many stacked marks" loading="eager" fetchpriority="high" decoding="async">
+    <figcaption class="sans">Same five letters, three different amounts of Unicode combining marks.</figcaption>
+  </figure>
+
+  <div class="answer">
+    <p><strong>The short answer:</strong> cursed text is ordinary text with extra Unicode characters, called combining marks, attached to each letter. Unicode only says which marks belong to which letter. How high they stack, whether they overlap, and whether they are cut off is decided by the font, the device's text engine and the app showing them. That is why the same message rarely looks identical in two places.</p>
+  </div>
+
+  <p>Most explanations of cursed text stop at "it uses special Unicode characters". That is true, but it leaves out the more interesting question: what happens to those characters after you press paste? Once the text leaves the generator, it has to survive fonts, operating systems, browsers, character counters and screen readers. Each of them treats it slightly differently.</p>
+
+  <section>
+    <h2>Cursed text is real text, not a picture</h2>
+    <p>Every character you type has a number in Unicode, called a code point. The letter <code>e</code> is <code>U+0065</code>. Unicode also includes characters that are not meant to stand alone: <em>combining marks</em>, which attach to the character before them. Many of the best-known ones sit in the Combining Diacritical Marks block, from <code>U+0300</code> to <code>U+036F</code>. In ordinary writing they produce accents, such as an acute accent over an e. A <a href="https://cursedtextcreater.com/" target="_blank" rel="noopener noreferrer">cursed text generator</a> uses the same mechanism at a much larger scale, attaching several marks above, below and through every letter.</p>
+    <p>Because the result is genuine text, you can copy it, paste it, search inside it and edit it, at least in principle. It is not a font and it is not an image. A single visible letter can be made of many code points, and that one fact explains most of the behaviour described below.</p>
+
+    <figure>
+      <img src="images/unicode-combining-marks-example.webp" width="1200" height="675" alt="A letter e with combining marks above and below, next to a table listing its five Unicode code points" loading="lazy" decoding="async">
+      <figcaption class="sans">One letter, five code points. In this font, the two marks above share a position, so the acute accent hides behind the circumflex.</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2>What decides how the marks are drawn</h2>
+    <p>Unicode defines the characters and the order they come in. It does not decide where each mark lands on screen. Three layers of software make that decision.</p>
+
+    <h3>The font</h3>
+    <p>Fonts carry positioning instructions for marks. A well-built font knows where to place an accent on each letter and how to stack a second mark on top of the first. Other fonts place every mark in the same spot, so a tower of ten marks collapses into one smudge. The illustration above shows exactly that. If the font has no shape for a particular mark, the system swaps in a fallback font. The mark then appears in a slightly different style, size or position from its neighbours.</p>
+
+    <h3>The text engine</h3>
+    <p>Below the font sits the operating system's or browser's shaping engine. Chrome and many Linux and Android apps use HarfBuzz, Windows uses DirectWrite, and Apple platforms use Core Text. These engines read the font's instructions and work out final positions. They agree on the basics but differ in the details, especially with long chains of marks that no real language uses.</p>
+
+    <h3>Line height and clipping</h3>
+    <p>Each line of text gets a fixed amount of vertical space, set in CSS by <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/line-height" target="_blank" rel="noopener noreferrer">line-height</a> on the web. Heavy cursed text spills well outside that space. Some apps let the marks overlap the lines above and below, which creates the classic "dripping" look. Others clip anything outside the box, so the same text arrives looking neatly trimmed.</p>
+  </section>
+
+  <section>
+    <h2>Glitch, Zalgo and weird Unicode: the same trick in different doses</h2>
+    <p>The styles people call glitch text and Zalgo text both rely on combining marks. The difference is mostly how many marks they use and where they put them. "Weird Unicode" styles usually work differently: they swap letters for look-alike symbols from other scripts or maths alphabets.</p>
+
+    <figure>
+      <img src="images/glitch-vs-zalgo-text-comparison.webp" width="1200" height="675" alt="The word Hello shown as normal text, glitch text and heavily distorted Zalgo text" loading="lazy" decoding="async">
+      <figcaption class="sans">Glitch text uses a light layer of marks; Zalgo stacks many above and below each letter.</figcaption>
+    </figure>
+
+    <div class="table-wrap sans">
+      <table>
+        <caption>How common styles are built, and what that means after pasting</caption>
+        <thead>
+          <tr>
+            <th scope="col">Style</th>
+            <th scope="col">What is added</th>
+            <th scope="col">Readability</th>
+            <th scope="col">Risk of trimming or clipping</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">Light glitch</th><td>One to three marks per letter, sometimes a strike-through</td><td>Good</td><td>Low</td></tr>
+          <tr><th scope="row">Zalgo</th><td>Many marks stacked above and below</td><td>Poor at high intensity</td><td>High</td></tr>
+          <tr><th scope="row">Look-alike symbols</th><td>Letters replaced by other characters</td><td>Varies</td><td>Depends on font coverage</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Why some apps trim, block or miscount it</h2>
+    <p>Long runs of combining marks are rare in real languages, so software often treats them with suspicion. Unicode's own <a href="https://www.unicode.org/reports/tr15/" target="_blank" rel="noopener noreferrer">normalisation report</a> describes a "stream-safe" format that limits how many marks can follow a single base character. Some systems apply limits like this to protect their layouts, and some forums and games strip marks altogether to stop text spilling across other people's posts.</p>
+    <p>Character limits are the other surprise. To a person, a Zalgo letter is one character. To a counter that tallies code points, it might be fifteen. Unicode distinguishes between code points and <em>grapheme clusters</em>, the units a reader perceives as single characters, in its <a href="https://www.unicode.org/reports/tr29/" target="_blank" rel="noopener noreferrer">text segmentation standard</a>. Not every app counts the same way. A short bio can hit the limit almost immediately, which is why platform-specific advice, such as this guide to <a href="https://cursedtextcreater.com/cursed-text-instagram/" target="_blank" rel="noopener noreferrer">cursed text for Instagram</a>, spends time on the character maths.</p>
+  </section>
+
+  <section>
+    <h2>Copying, searching and normalisation</h2>
+    <p>An accented letter can be stored in two ways. <code>é</code> can be a single precomposed character, or a plain <code>e</code> followed by a combining acute accent. They look the same but are different sequences. Software usually converts text to a standard form, a process called normalisation, before comparing or searching it. In JavaScript this is <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/normalize" target="_blank" rel="noopener noreferrer">String.prototype.normalize()</a>.</p>
+    <p>Normalisation can reorder marks or merge some of them, but it cannot remove a decorative stack of thirty. In practice, a username or post title in cursed text can be hard for others to find through search, and hard to type back in when you need to log in or mention someone. Keep anything functional, such as handles, links and passwords, in plain characters.</p>
+  </section>
+
+  <section>
+    <h2>Readability and accessibility</h2>
+    <p>Screen readers work from the underlying code points, not from the picture on screen. Depending on the software and its settings, a Zalgo word may be read out as the base letters, as a long list of mark names, or skipped. None of those matches what a sighted reader sees. Heavy marks also make text harder to read for people with low vision or dyslexia, and they can obscure the lines around them.</p>
+    <p>A practical rule is to treat cursed text as decoration. Use it for a word, a display name or a heading-sized flourish, and keep the information that matters in ordinary text nearby. Where an app supports alt text or a description field, put a plain version there.</p>
+  </section>
+
+  <section>
+    <h2>How to test cursed text before you post it</h2>
+    <p>Because the result depends on the font and app, the only reliable check is to look at it where it will appear. A quick routine:</p>
+    <ol>
+      <li><strong>Start light.</strong> Generate the lowest intensity that gives the effect you want, then increase it step by step.</li>
+      <li><strong>Preview in the real app.</strong> Paste into a draft or a private message rather than straight into a public post.</li>
+      <li><strong>Check two devices.</strong> A phone and a desktop often use different fonts and engines, so look at both.</li>
+      <li><strong>Try light and dark mode.</strong> Thin marks can disappear against some backgrounds.</li>
+      <li><strong>Watch the counter.</strong> If the app shows remaining characters, see how much the marks cost.</li>
+    </ol>
+    <p>If you are working from a phone, the steps for copying and pasting differ slightly from desktop. This walkthrough on <a href="https://cursedtextcreater.com/cursed-keyboard-how-to-type-cursed-text-on-any-device-2026-guide/" target="_blank" rel="noopener noreferrer">typing cursed text on any device</a> covers mobile and desktop methods.</p>
+
+    <figure>
+      <img src="images/cursed-text-creater-interface.webp" width="800" height="630" alt="Cursed Text Creater interface showing the text input, an intensity slider and generated glitch text" loading="lazy" decoding="async">
+      <figcaption class="sans">A generator's intensity control is the quickest way to test how much distortion a platform will tolerate. Screenshot from Cursed Text Creater.</figcaption>
+    </figure>
+
+    <aside class="tool-box sans" aria-label="Tool mentioned in this article">
+      <img src="https://cursedtextcreater.com/wp-content/uploads/2026/08/cropped-3f6c2acb-00aa-44d0-a938-db63f2b7ebec-300x222.png" alt="Cursed Text Creater" width="300" height="222" loading="lazy" decoding="async">
+      <p><strong>Tool mentioned:</strong> Cursed Text Creater is a free browser-based generator that produces glitch, Zalgo and weird Unicode versions of your text, with an adjustable intensity level and copy buttons for each style.</p>
+    </aside>
+  </section>
+
+  <section>
+    <h2>Final thoughts</h2>
+    <p>Cursed text is a small demonstration of how text works on the internet. Unicode supplies the building blocks, fonts and text engines decide the shape, and each app sets its own limits. Once you know that, the inconsistencies stop being mysterious. Keep the intensity sensible, preview it where it will be seen, and leave anything people need to read or find in plain characters.</p>
+  </section>
+
+  <section>
+    <h2>Frequently asked questions</h2>
+
+    <h3>Is Zalgo text a font?</h3>
+    <p>No. It is ordinary text with Unicode combining marks added after each letter. It is displayed in whatever font the app is already using, which is why it changes from place to place.</p>
+
+    <h3>Why does my cursed text look neat in one app and messy in another?</h3>
+    <p>The font, the device's text engine and the app's line spacing all affect where the marks are drawn. Some apps also clip text that extends beyond its line or remove extra marks altogether.</p>
+
+    <h3>Why does cursed text use up character limits so quickly?</h3>
+    <p>Each mark is a separate Unicode character. A letter that looks like one character can contain a dozen or more, and many counters include every one of them.</p>
+
+    <h3>Can screen readers read cursed text?</h3>
+    <p>Only partly. Depending on the software, they may read the base letters, list the marks or skip the text. Pair decorative cursed text with a plain version when the meaning matters.</p>
+  </section>
+
+  <section class="sources sans" aria-labelledby="src">
+    <h2 id="src">Sources and further reading</h2>
+    <ul>
+      <li><a href="https://www.unicode.org/charts/PDF/U0300.pdf" target="_blank" rel="noopener noreferrer">Unicode: Combining Diacritical Marks chart (U+0300–U+036F)</a></li>
+      <li><a href="https://www.unicode.org/reports/tr15/" target="_blank" rel="noopener noreferrer">Unicode Standard Annex #15: Unicode Normalization Forms</a></li>
+      <li><a href="https://www.unicode.org/reports/tr29/" target="_blank" rel="noopener noreferrer">Unicode Standard Annex #29: Unicode Text Segmentation</a></li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/normalize" target="_blank" rel="noopener noreferrer">MDN: String.prototype.normalize()</a></li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/line-height" target="_blank" rel="noopener noreferrer">MDN: line-height</a></li>
+    </ul>
+  </section>
+
+</article>
+</main>
+
+<footer class="site-footer sans">
+  <p>&copy; {{PUBLISHER_NAME}}</p>
+</footer>
+
+</body>
+</html>
